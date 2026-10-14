@@ -97,15 +97,14 @@ button, input, textarea { font: inherit; color: inherit; }
 .kicker { font-family: var(--f-display); font-style: italic; font-size: clamp(16px, 2vw, 20px); color: #fff; text-shadow: 0 1px 10px rgba(0,0,0,.35); letter-spacing: .02em; text-wrap: balance; text-align: center; margin: 0; }
 
 .deck { --rec: min(60vw, 380px); position: relative; width: var(--rec); height: var(--rec); }
-.deck::before { content: ""; position: absolute; inset: -22%; border-radius: 50%; background: radial-gradient(circle, var(--glow) 0%, transparent 62%); z-index: -1; pointer-events: none; }
 .record { all: unset; position: absolute; inset: 0; border-radius: 50%; cursor: pointer; display: block; }
-.record:focus-visible { outline: 3px solid #fff; outline-offset: 6px; }
+.record:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
 .disc { position: absolute; inset: 0; border-radius: 50%; will-change: transform;
   background:
     radial-gradient(circle, transparent 0 31%, rgba(255,255,255,.05) 31.4% 32%, transparent 32.4%),
     radial-gradient(circle, transparent 0 96%, #2b2c2f 96.5% 97.5%, var(--vinyl) 98%),
     repeating-radial-gradient(circle at 50% 50%, var(--vinyl) 0 1.2px, var(--vinyl-2) 1.6px 2.6px);
-  box-shadow: 0 18px 40px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.04); }
+}
 .label { position: absolute; inset: 31%; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: #fff; text-align: center;
   background:
     radial-gradient(circle, var(--vinyl) 0 4.5%, transparent 5%),
@@ -118,7 +117,7 @@ button, input, textarea { font: inherit; color: inherit; }
 .sheen { position: absolute; inset: 0; border-radius: 50%; pointer-events: none;
   background: conic-gradient(from 20deg, transparent 0 8%, rgba(255,255,255,.13) 13%, transparent 20% 52%, rgba(255,255,255,.09) 61%, transparent 69%);
   -webkit-mask: radial-gradient(circle, transparent 0 31%, #000 31.5%); mask: radial-gradient(circle, transparent 0 31%, #000 31.5%); }
-.tonearm { position: absolute; right: -12%; top: -6%; width: 40%; height: 85%; transform-origin: 75% 10%; transform: rotate(-22deg); transition: transform .9s cubic-bezier(.5,.1,.2,1); pointer-events: none; filter: drop-shadow(0 6px 6px rgba(0,0,0,.35)); }
+.tonearm { position: absolute; right: -12%; top: -6%; width: 40%; height: 85%; transform-origin: 75% 10%; transform: rotate(-22deg); transition: transform .9s cubic-bezier(.5,.1,.2,1); pointer-events: none; }
 .playing .tonearm { transform: rotate(0deg); }
 
 .city { position: relative; z-index: 3; display: block; width: 100%; height: auto; margin-top: -26.5%; pointer-events: none; }
@@ -142,12 +141,14 @@ button, input, textarea { font: inherit; color: inherit; }
   display: flex; gap: 12px; align-items: center; padding: 10px; background: var(--paper); color: var(--fg); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); max-width: calc(100vw - 32px);
   transform: translateY(calc(100% + 40px)); transition: transform .4s ease; }
 .np.show { transform: none; }
-.np .yt { width: 200px; height: 113px; border-radius: 8px; overflow: hidden; background: #000; flex: none; }
-.np .yt iframe { width: 100%; height: 100%; display: block; }
+.np-disc { width: 48px; height: 48px; border-radius: 50%; flex: none; background: radial-gradient(circle, var(--vinyl) 0 6%, var(--tulip) 7% 30%, var(--vinyl) 31%); animation: npspin 1.8s linear infinite; animation-play-state: paused; }
+.np-disc.on { animation-play-state: running; }
+@keyframes npspin { to { transform: rotate(360deg); } }
+.np .song small { color: var(--muted); font-size: 13px; }
 .np .meta { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
 .np .eyebrow { font-size: 11px; text-transform: uppercase; letter-spacing: .14em; color: var(--muted); }
 .np .song { font-family: var(--f-body); font-size: 15px; line-height: 1.25; max-width: 180px; overflow-wrap: anywhere; }
-@media (max-width: 520px) { .np .yt { width: 128px; height: 72px; } .np .song { max-width: 140px; } }
+
 
 /* ---------- Diary ---------- */
 main { max-width: 980px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 120px; display: grid; gap: 44px; }
@@ -267,15 +268,15 @@ input:focus, textarea:focus { outline: none; border-color: var(--accent); box-sh
 
   <div class="hint">
     <span id="hintText" data-t="hint"></span>
-    <a class="yt-link" id="ytLink" href="https://youtu.be/6gZ04DcU1ug" target="_blank" rel="noopener" hidden><span data-t="openYt"></span> ↗</a>
   </div>
 </header>
 
+<audio id="song" src="song.mp3" preload="none" loop></audio>
 <aside class="np" id="np" aria-live="polite">
-  <div class="yt"><div id="ytPlayer"></div></div>
+  <span class="np-disc" aria-hidden="true"></span>
   <div class="meta">
     <span class="eyebrow" data-t="nowPlaying"></span>
-    <span class="song" id="songTitle">YouTube</span>
+    <span class="song" id="songTitle">Nilüfer – Son Arzum<br><small>1964 Symphonic Version</small></span>
     <div><button class="btn small" id="npToggle" type="button"></button></div>
   </div>
 </aside>
@@ -339,8 +340,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--accent); box-sh
 const T = {
   en: {
     kicker: "An Istanbul notebook", title: "Diary", hint: "Tap the record to play the song",
-    openYt: "Open the song on YouTube", nowPlaying: "Now playing", play: "Play", pause: "Pause",
-    noEmbed: "Music can't play inside this preview.",
+    nowPlaying: "Now playing", play: "Play", pause: "Pause",
     cover: "Change cover photo", resetCover: "Use the skyline",
     newEntry: "New entry", savedLocal: "Your diary is saved in this browser only.",
     storageWarn: "This browser isn't saving data. Entries will disappear when you close the page.",
@@ -356,8 +356,7 @@ const T = {
   },
   de: {
     kicker: "Ein Istanbuler Notizbuch", title: "Tagebuch", hint: "Tippe auf die Platte, um den Song abzuspielen",
-    openYt: "Song auf YouTube öffnen", nowPlaying: "Läuft gerade", play: "Abspielen", pause: "Pause",
-    noEmbed: "In dieser Vorschau kann keine Musik abgespielt werden.",
+    nowPlaying: "Läuft gerade", play: "Abspielen", pause: "Pause",
     cover: "Titelbild ändern", resetCover: "Skyline verwenden",
     newEntry: "Neuer Eintrag", savedLocal: "Dein Tagebuch wird nur in diesem Browser gespeichert.",
     storageWarn: "Dieser Browser speichert keine Daten. Einträge gehen beim Schließen der Seite verloren.",
@@ -373,8 +372,7 @@ const T = {
   },
   tr: {
     kicker: "Bir İstanbul defteri", title: "Günlük", hint: "Şarkıyı çalmak için plağa dokun",
-    openYt: "Şarkıyı YouTube'da aç", nowPlaying: "Şimdi çalıyor", play: "Çal", pause: "Duraklat",
-    noEmbed: "Müzik bu önizlemede çalınamıyor.",
+    nowPlaying: "Şimdi çalıyor", play: "Çal", pause: "Duraklat",
     cover: "Kapak fotoğrafını değiştir", resetCover: "Silueti kullan",
     newEntry: "Yeni sayfa", savedLocal: "Günlüğün yalnızca bu tarayıcıda saklanır.",
     storageWarn: "Bu tarayıcı veri kaydetmiyor. Sayfayı kapatınca kayıtlar silinecek.",
@@ -475,11 +473,10 @@ document.querySelectorAll("[data-lang]").forEach(b => b.addEventListener("click"
   svg.innerHTML = parts.join("");
 })();
 
-/* ---------------- Record + YouTube ---------------- */
-const VIDEO_ID = "6gZ04DcU1ug";
+/* ---------------- Record + song ---------------- */
 const deck = document.getElementById("deck"), record = document.getElementById("record"), disc = document.getElementById("disc");
-const np = document.getElementById("np"), npToggle = document.getElementById("npToggle"), ytLink = document.getElementById("ytLink"), hintText = document.getElementById("hintText");
-let player = null, ytReady = false, ytFailed = false, playing = false, wantPlay = false;
+const np = document.getElementById("np"), npToggle = document.getElementById("npToggle"), audio = document.getElementById("song");
+let playing = false;
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 let angle = 0, speed = 0, last = performance.now();
@@ -498,46 +495,15 @@ function updatePlayerUI() {
   record.setAttribute("aria-pressed", playing);
   record.setAttribute("aria-label", playing ? t("pause") : t("play"));
   npToggle.textContent = playing ? "❚❚ " + t("pause") : "▶ " + t("play");
-  ytLink.hidden = !ytFailed;
-  hintText.textContent = ytFailed ? t("noEmbed") : t("hint");
+  document.querySelector(".np-disc").classList.toggle("on", playing);
 }
-
-window.onYouTubeIframeAPIReady = function () {
-  try {
-    player = new YT.Player("ytPlayer", {
-      width: 200, height: 113, videoId: VIDEO_ID,
-      playerVars: { playsinline: 1, rel: 0, modestbranding: 1 },
-      events: {
-        onReady: () => { ytReady = true; if (wantPlay) player.playVideo(); updatePlayerUI(); },
-        onStateChange: e => {
-          playing = e.data === YT.PlayerState.PLAYING || e.data === YT.PlayerState.BUFFERING;
-          if (e.data === YT.PlayerState.ENDED) { player.seekTo(0); player.playVideo(); }
-          try { const title = player.getVideoData().title; if (title) document.getElementById("songTitle").textContent = title; } catch (_) {}
-          updatePlayerUI();
-        },
-        onError: () => { ytFailed = true; playing = false; updatePlayerUI(); }
-      }
-    });
-  } catch (e) { ytFailed = true; updatePlayerUI(); }
-};
-(function loadYT() {
-  const s = document.createElement("script");
-  s.src = "https://www.youtube.com/iframe_api";
-  s.onerror = () => { ytFailed = true; updatePlayerUI(); };
-  document.head.appendChild(s);
-  setTimeout(() => { if (!ytReady && !ytFailed) { ytFailed = true; updatePlayerUI(); } }, 8000);
-})();
+audio.addEventListener("play", () => { playing = true; np.classList.add("show"); updatePlayerUI(); });
+audio.addEventListener("pause", () => { playing = false; updatePlayerUI(); });
 
 function togglePlay() {
-  if (ytFailed || !player) {
-    if (ytFailed) { playing = !playing; updatePlayerUI(); ytLink.focus(); }
-    else { wantPlay = true; }
-    return;
-  }
-  np.classList.add("show");
-  if (playing) player.pauseVideo(); else player.playVideo();
+  if (audio.paused) audio.play().catch(() => {}); else audio.pause();
 }
-record.addEventListener("click", togglePlay);
+record.addEventListener("click", e => { togglePlay(); if (e.detail) record.blur(); });
 npToggle.addEventListener("click", togglePlay);
 
 /* ---------------- Storage (IndexedDB, memory fallback) ---------------- */
