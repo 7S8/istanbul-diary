@@ -117,8 +117,6 @@ button, input, textarea { font: inherit; color: inherit; }
 .sheen { position: absolute; inset: 0; border-radius: 50%; pointer-events: none;
   background: conic-gradient(from 20deg, transparent 0 8%, rgba(255,255,255,.13) 13%, transparent 20% 52%, rgba(255,255,255,.09) 61%, transparent 69%);
   -webkit-mask: radial-gradient(circle, transparent 0 31%, #000 31.5%); mask: radial-gradient(circle, transparent 0 31%, #000 31.5%); }
-.tonearm { position: absolute; right: -12%; top: -6%; width: 40%; height: 85%; transform-origin: 75% 10%; transform: rotate(-22deg); transition: transform .9s cubic-bezier(.5,.1,.2,1); pointer-events: none; }
-.playing .tonearm { transform: rotate(0deg); }
 
 .city { position: relative; z-index: 3; display: block; width: 100%; height: auto; margin-top: -26.5%; pointer-events: none; }
 .hint { position: absolute; z-index: 4; left: 0; right: 0; bottom: clamp(10px, 3vw, 34px); display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px 14px; color: var(--on-water); font-size: 13px; letter-spacing: .04em;
@@ -218,7 +216,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--accent); box-sh
 
 @media (prefers-reduced-motion: reduce) {
   .ferry, .shimmer, .gull { animation: none; }
-  .tonearm, .np, .toast { transition: none; }
+  .np, .toast { transition: none; }
 }
 </style>
 </head>
@@ -254,13 +252,6 @@ input:focus, textarea:focus { outline: none; border-color: var(--accent); box-sh
         </span>
         <span class="sheen"></span>
       </button>
-      <svg class="tonearm" viewBox="0 0 100 200" aria-hidden="true">
-        <circle cx="75" cy="20" r="14" fill="#c9ccd1"/>
-        <circle cx="75" cy="20" r="7" fill="#7d838c"/>
-        <path d="M75 20 L64 150 L48 178" fill="none" stroke="#d9dce0" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-        <rect x="36" y="170" width="20" height="13" rx="2" transform="rotate(-38 46 176)" fill="#9aa0a8"/>
-        <rect x="69" y="0" width="12" height="10" rx="2" fill="#7d838c"/>
-      </svg>
     </div>
   </div>
 
